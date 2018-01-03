@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Calcule o valor da Bitcoin nas principais exchanges brasileiras. O preço da Bitcoin é ao vivo!">
+  <meta http-equiv="Access-Control-Allow-Origin" content="https://api.blinktrade.com https://www.bitcointoyou.com https://www.mercadobitcoin.net https://broker.negociecoins.com.br">
+  <meta name="google-site-verification" content="8wNDy8vvGJy-a9urkZdbRRT6GDceoSm0gWdN-Fb2A0I" />
+
+  <title>Valor Bitcoin &amp; Calculadora Bitcoin</title>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+  <link rel="stylesheet" type="text/css" href="style.css">
+
+  <link rel="canonical" href="https://calculadorabtc.com.br">
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-897164-10"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-897164-10');
+  </script>
+</head>
+<body>
+  <div class="main">
+    <div class="container-fluid h-100">
+      <div class="row justify-content-center">
+        <div class="col-sm-8 col-md-7 col-xl-5">
+          <div class="card">
+            <div class="card-header text-center">
+              <h2>Calculadora Bitcoin</h2>
+            </div>
+            
+            <div class="card-body">
+              <h5>Reais <sup>BRL</sup> em Bitcoin <sup>BTC</sup></h5>
+
+              <div class="row">
+                <div class="col-sm">
+                  <div class="input-group input-group-lg">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">R$</span>
+                    </div>
+                    
+                    <input type="number" step="100" class="form-control form-control-lg" id="brlbtc-input" placeholder="1000.00">
+                  </div>
+                </div>
+
+                <div class="col-sm-auto align-self-center text-center">
+                  &rarr;
+                </div>
+
+                <div class="col-sm">
+                  <div class="input-group input-group-lg">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><span class="fa fa-fw fa-btc" title="BTC"></span></span>
+                    </div>
+
+                    <input class="form-control form-control-lg" id="brlbtc-output" disabled>
+                  </div>
+                </div>
+              </div>
+              
+              <hr>
+
+              <h5>Bitcoin <sup>BTC</sup> em Reais <sup>BRL</sup></h5>
+
+              <div class="row">
+                <div class="col-sm">
+                  <div class="input-group input-group-lg">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><span class="fa fa-fw fa-btc" title="BTC"></span></span>
+                    </div>
+
+                    <input type="number" step="0.01" class="form-control form-control-lg" placeholder="0.05" id="btcbrl-input">
+                  </div>
+                </div>
+
+                <div class="col-sm-auto align-self-center text-center">
+                  &rarr;
+                </div>
+
+                <div class="col-sm">
+                  <div class="input-group input-group-lg">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">R$</span>
+                    </div>
+                    
+                    <input class="form-control form-control-lg" id="btcbrl-output" disabled>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-4 col-md-3 col-xl-2 outside align-self-center">
+          <h1 class="outside-title">Valor Bitcoin</h1>
+
+          <dl>
+            <dt>Foxbit</dt>
+            <dd>R$ <span id="price-foxbit">Carregando...</span></dd>
+
+            <dt>Mercado Bitcoin</dt>
+            <dd>R$ <span id="price-mercadobitcoin">Carregando...</span></dd>
+
+            <dt>BitcoinToYou</dt>
+            <dd>R$ <span id="price-bitcointoyou">Carregando...</span></dd>
+
+            <dt>NegocieCoins</dt>
+            <dd>R$ <span id="price-negociecoins">Carregando...</span></dd>
+
+            <dd><small>Preço atualizado agora.</small></dd>
+          </dl>
+        </div>
+      </div>
+      
+      <div class="row justify-content-center ads">
+        <div class="col-md-8">
+          <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+          <!-- Calculadora BTC -->
+          <ins class="adsbygoogle"
+               style="display:block"
+               data-ad-client="ca-pub-8261298062293140"
+               data-ad-slot="8256785277"
+               data-ad-format="auto"></ins>
+          <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+          </script>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="https://unpkg.com/axios@0.17.1/dist/axios.min.js"></script>
+  <script>
+    var EXCHANGES = [
+      // 'foxbit',
+      'mercadobitcoin',
+      'bitcointoyou',
+      'negociecoins'
+    ];
+
+    var lowestPrice = null;
+    var highestPrice = null;
+
+    function fetchAndUpdatePrices() {
+      var ENDPOINTS = {
+        foxbit: 'https://api.blinktrade.com/api/v1/BRL/ticker',
+        mercadobitcoin: 'https://www.mercadobitcoin.net/api/BTC/ticker/',
+        bitcointoyou: 'https://www.bitcointoyou.com/api/ticker.aspx',
+        negociecoins: 'https://broker.negociecoins.com.br/api/v3/btcbrl/ticker'
+      };
+
+      EXCHANGES.forEach(function(exchange) {
+        axios
+          .get(ENDPOINTS[exchange], { jsonp: true })
+          .then(function(response) {
+            var price = null;
+
+            switch (exchange) {
+              case 'mercadobitcoin' :
+              case 'bitcointoyou' :
+                price = response.data.ticker.last;
+                break;
+
+              default :
+                price = response.data.last;
+                break;
+            }
+
+            price = parseFloat(price);
+            lowestPrice = lowestPrice || price;
+            highestPrice = highestPrice || price;
+
+            if (price < lowestPrice) {
+              lowestPrice = price;
+            } else if (price > highestPrice) {
+              highestPrice = price;
+            }
+
+            document.getElementById('price-' + exchange).textContent = price.toFixed(2) || 'Carregando...';
+          });
+      });
+    }
+
+    function btcBrlChange(event) {
+      var btcBrlOutput = document.getElementById('btcbrl-output');
+      btcBrlOutput.value = (event.target.value * lowestPrice).toFixed(2);
+    }
+
+    function brlBtcChange(event) {
+      var brlBtcOutput = document.getElementById('brlbtc-output');
+      brlBtcOutput.value = (event.target.value / lowestPrice).toFixed(8);
+    }
+
+    function initCalculator() {
+      var btcBrlInput = document.getElementById('btcbrl-input');
+      var brlBtcInput = document.getElementById('brlbtc-input');
+
+      btcBrlInput.onkeyup = btcBrlChange;
+      btcBrlInput.onchange = btcBrlChange;
+      brlBtcInput.onkeyup = brlBtcChange;
+      brlBtcInput.onchange = brlBtcChange;
+    }
+
+    var DOMReady = function(a,b,c){b=document,c='addEventListener';b[c]?b[c]('DOMContentLoaded',a):window.attachEvent('onload',a)};
+
+    DOMReady(function() {
+      initCalculator();
+      fetchAndUpdatePrices();
+      setInterval(fetchAndUpdatePrices, 60000);
+    });
+  </script>
+</body>
+</html>

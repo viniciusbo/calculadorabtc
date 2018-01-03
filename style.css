@@ -1,0 +1,37 @@
+body {
+  background-color: #FAA43D;
+}
+
+.main .card {
+  margin-top: 20px;
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
+}
+
+.main .card-header {
+  background: transparent;
+}
+
+.outside {
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.outside-title {
+  font-size: 1.5rem;
+  margin-top: 35px;
+}
+
+.form-control:disabled {
+  background: rgba(0, 0, 0, 0.025);
+  cursor: not-allowed;
+}
+
+.ads {
+  margin-top: 35px;
+}
+
+@media (min-width: 768px) {
+  .main {
+    padding-top: 20vh;
+  }
+}
